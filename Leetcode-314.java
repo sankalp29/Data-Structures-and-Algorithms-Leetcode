@@ -2,7 +2,6 @@
     https://leetcode.com/problems/binary-tree-vertical-order-traversal/
 */
 
-
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -26,41 +25,32 @@ class Solution {
     public List<List<Integer>> verticalOrder(TreeNode root) {
         if (root == null) return new ArrayList<>();
         // Map of xCoordinate -> (nodes present on that xCoordinate)
-        Map<Integer, List<Integer>> xCoordinateNodes = new HashMap<>();
+        Map<Integer, List<Integer>> columnNodes = new TreeMap<>();
 
-        Queue<Tuple> queue = new LinkedList<>();
-        queue.add(new Tuple(root, 0));
-        int lowestXCoordinate = Integer.MAX_VALUE;
+        Queue<Pair> queue = new LinkedList<>();
+        queue.add(new Pair(root, 0));
 
         while (!queue.isEmpty()) {
-            Tuple tuple = queue.poll();
-            TreeNode node = tuple.node;
-            int xCoordinate = tuple.xCoordinate;
-            lowestXCoordinate = Math.min(lowestXCoordinate, xCoordinate);
+            Pair pair = queue.poll();
+            TreeNode node = pair.node;
+            int x = pair.x;
 
-            xCoordinateNodes.putIfAbsent(xCoordinate, new ArrayList<>());
-            xCoordinateNodes.get(xCoordinate).add(node.val);
+            columnNodes.computeIfAbsent(x, k -> new ArrayList<>()).add(node.val);
 
-            if (node.left != null) queue.add(new Tuple(node.left, xCoordinate - 1));
-            if (node.right != null) queue.add(new Tuple(node.right, xCoordinate + 1));
+            if (node.left != null) queue.add(new Pair(node.left, x - 1));
+            if (node.right != null) queue.add(new Pair(node.right, x + 1));
         }
 
-        List<List<Integer>> result = new ArrayList<>();
-
-        for (int i = lowestXCoordinate; xCoordinateNodes.containsKey(i); i++) {
-            result.add(xCoordinateNodes.get(i));
-        }
-
-        return result;
+        return new ArrayList<>(columnNodes.values());
     }
 }
 
-class Tuple {
+class Pair {
     public TreeNode node;
-    public int xCoordinate;
+    public int x;
 
-    public Tuple (TreeNode node, int xCoordinate) {
+    public Pair (TreeNode node, int x) {
         this.node = node;
-        this.xCoordinate = xCoordinate;
+        this.x = x;
     }
 }
