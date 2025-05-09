@@ -1,11 +1,11 @@
-// Solution 1:
+// Solution 1: Less optimal solution
+
+/*
+ * Time complexity : O(N) + O(N) => O(N)
+ * Space complexity : O(N) (to create a new string)
+ */
+/*
 class Solution {
-    /**
-     * Time complexity : O(N) + O(N) => O(N)
-     * Space complexity : O(N) (to create a new string)
-     */
-    
-    /*
     public boolean isPalindrome(String s) {
         // Solution 1
         StringBuilder sb = new StringBuilder();
@@ -18,7 +18,6 @@ class Solution {
         }
 
         return isPalindrome(sb);
-        */
     }
 
     private boolean isPalindrome(StringBuilder sb) {
@@ -34,11 +33,12 @@ class Solution {
 }
 */
 
+// Solution 2: Optimal solution
 class Solution {
     /**
-     * Time complexity : O(N)
+     * Time complexity : O(N) (Single pass over the input string)
      * Space complexity : O(1)
-    /*
+    */
     public boolean isPalindrome(String s) {
 
         int left = 0, right = s.length() - 1;
@@ -54,8 +54,8 @@ class Solution {
                 continue;
             }
 
-            leftChar = (Character.isLetter(leftChar) && Character.isUpperCase(leftChar)) ? Character.toLowerCase(leftChar) : leftChar;
-            rightChar = (Character.isLetter(rightChar) && Character.isUpperCase(rightChar)) ? Character.toLowerCase(rightChar) : rightChar;
+            leftChar = Character.isLetter(leftChar) ? Character.toLowerCase(leftChar) : leftChar;
+            rightChar = Character.isLetter(rightChar) ? Character.toLowerCase(rightChar) : rightChar;
 
             if (leftChar != rightChar) return false;
             left++;
