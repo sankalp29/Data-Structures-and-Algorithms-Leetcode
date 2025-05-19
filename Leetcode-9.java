@@ -11,13 +11,6 @@ class Solution {
         if (x < 0) return false;
         int number = 0, current = x;
 
-        /**
-            x = 121
-            current = 0
-            rem = 1
-            number = 121
-         */
-
         while (current > 0) {
             int rem = current % 10;
             number = number * 10 + rem;
