@@ -4,11 +4,11 @@
 
 class Solution {
     /**
-     * Time complexity : O(N)
+     * Time complexity : O(N + M)
      * Space complexity : O(1)
      */
     public String minWindow(String s, String t) {
-        int[] frequency = new int[125];
+        int[] frequency = new int[128];
         int required = 0, n = s.length(), m = t.length();
 
         for (char ch : t.toCharArray()) {
@@ -16,14 +16,14 @@ class Solution {
             frequency[ch]++;
         }
 
-        int left = 0, right = 0, distinct = 0, minlength = Integer.MAX_VALUE;
+        int left = 0, right = 0, minlength = Integer.MAX_VALUE;
         int startIndex = -1;
 
         while (right < n) {
             frequency[s.charAt(right)]--;
-            if (frequency[s.charAt(right)] == 0) distinct++;
+            if (frequency[s.charAt(right)] == 0) required--;
 
-            while (distinct == required) {
+            while (required == 0) {
                 int len = right - left + 1;
                 if (len < minlength) {
                     startIndex = left;
@@ -31,7 +31,7 @@ class Solution {
                 }
 
                 frequency[s.charAt(left)]++;
-                if (frequency[s.charAt(left)] > 0) distinct--;
+                if (frequency[s.charAt(left)] > 0) required++;
                 left++;
             }
 
