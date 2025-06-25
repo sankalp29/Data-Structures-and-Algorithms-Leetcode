@@ -4,50 +4,48 @@
 
 class Solution {
     /**
-     * Time complexity : O(26 * (V + E)) = O(V + E)
-     * Space complexity : O(26*V) + O(E)
+     * Time complexity : O(V + E)
+     * Space complexity : O(V + E)
      */
     public int largestPathValue(String colors, int[][] edges) {
-        int V = colors.length();
-        int[] inDegree = new int[V], visited = new int[V];
-        int nodesSeen = 0, maxColorValue = -1;
-        // Construct adjancency list
-        List<List<Integer>> adjList = new ArrayList<>();
-        for (int i = 0; i < V; i++) adjList.add(new ArrayList<>());
+        int n = colors.length();
+        Map<Integer, List<Integer>> adjList = new HashMap<>();
+        int[] inDegree = new int[n];
+        int maxColorValue = -1;
 
         for (int[] edge : edges) {
             int from = edge[0], to = edge[1];
+            adjList.putIfAbsent(from, new ArrayList<>());
             adjList.get(from).add(to);
+
             inDegree[to]++;
         }
 
-        // Perform Topological Sort
-        Queue<Integer> bfsQueue = new LinkedList<>();
-        int[][] colorsAtNode = new int[V][26];
-        for (int i = 0; i < V; i++) {
-            if (inDegree[i] == 0) bfsQueue.add(i);
+        int[][] colorFrequency = new int[n][26];
+        Queue<Integer> topoSortQ = new LinkedList<>();
+
+        for (int i = 0; i < n; i++) {
+            if (inDegree[i] == 0) topoSortQ.add(i);
         }
-
-        while (!bfsQueue.isEmpty()) {
-            int node = bfsQueue.poll();
+        
+        int nodesVisited = 0;
+        while (!topoSortQ.isEmpty()) {
+            Integer node = topoSortQ.poll();
+            nodesVisited++;
             int color = colors.charAt(node) - 'a';
-            colorsAtNode[node][color]++;
-            maxColorValue = Math.max(maxColorValue, colorsAtNode[node][color]);
-            visited[node] = 1;
-            nodesSeen++;
+            colorFrequency[node][color]++;
+            maxColorValue = Math.max(maxColorValue, colorFrequency[node][color]);
 
-            for (Integer neighbour : adjList.get(node)) {
+            for (Integer neighbour : adjList.getOrDefault(node, new ArrayList<>())) {
+                for (int col = 0; col < 26; col++) {
+                    colorFrequency[neighbour][col] = Math.max(colorFrequency[neighbour][col], colorFrequency[node][col]);
+                }
+
                 inDegree[neighbour]--;
-                if (inDegree[neighbour] == 0) {
-                    bfsQueue.add(neighbour);
-                }
-                for (int i = 0; i < 26; i++) {
-                    // Pass in the frequency of every color in the current path to the neighbor node
-                    colorsAtNode[neighbour][i] = Math.max(colorsAtNode[neighbour][i], colorsAtNode[node][i]);
-                }
+                if (inDegree[neighbour] == 0) topoSortQ.add(neighbour);
             }
         }
 
-        return nodesSeen == V ? maxColorValue : -1;
+        return nodesVisited == n ? maxColorValue : -1;
     }
 }
