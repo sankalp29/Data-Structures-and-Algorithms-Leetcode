@@ -26,8 +26,7 @@ class Solution {
     private long calculateHoursNeeded(int[] piles, long eatPerHour) {
         long hoursNeeded = 0;
         for (int bananas : piles) {
-            if (bananas % eatPerHour == 0) hoursNeeded+=(bananas / eatPerHour);
-            else hoursNeeded+= (bananas + eatPerHour) / eatPerHour;
+            hoursNeeded+= (bananas + eatPerHour - 1) / eatPerHour;
         }
 
         return hoursNeeded;
