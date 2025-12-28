@@ -4,31 +4,30 @@
 
 class Solution {
     /**
-     * Time complexity : O(N^2)
-     * Space complexity : O(1)
+     * Time complexity : O(N ^ 2 + OlogN)
+     * Space complexity : O(1) auxiliary space
      */
     public List<List<Integer>> threeSum(int[] nums) {
-        List<List<Integer>> triplets = new ArrayList<>();
+        int n = nums.length;
+        List<List<Integer>> result = new ArrayList<>();
         Arrays.sort(nums);
 
-        for (int i = 0; i < nums.length; i++) {
-            if (i > 0 && nums[i] == nums[i-1]) continue;
-            int left = i + 1, right = nums.length - 1;
-
-            while (left < right) {
-                int totalSum = nums[i] + nums[left] + nums[right];
-                if (totalSum == 0) {
-                    triplets.add(List.of(nums[i], nums[left], nums[right]));
-                    left++;
-                    right--;
-                    while (left < right && nums[left] == nums[left - 1]) left++;
-                    while (left < right && nums[right] == nums[right + 1]) right--;
-                } else if (totalSum > 0) {
-                    right--;
-                } else left++;
+        for (int i = 0; i < n - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            int start = i + 1, end = n - 1;
+            while (start < end) {
+                int sum = nums[i] + nums[start] + nums[end];
+                if (sum == 0) {
+                    result.add(List.of(nums[i], nums[start], nums[end]));
+                    int value = nums[start];
+                    while (start < end && nums[start] == value) start++;
+                    value = nums[end];
+                    while (start < end && nums[end] == value) end--;
+                } else if (sum < 0) start++;
+                else end--;
             }
         }
 
-        return triplets;
+        return result;
     }
 }
